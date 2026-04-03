@@ -195,112 +195,89 @@ export function CheckoutClient() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="line1">Address Line 1</Label>
+                  <Label htmlFor="hostelName">Hostel Name</Label>
                   <Input
-                    id="line1"
-                    value={shippingAddress.line1}
-                    onChange={(e) => updateAddress("line1", e.target.value)}
-                    placeholder="123 Main St"
-                    autoComplete="address-line1"
+                    id="hostelName"
+                    value={shippingAddress.hostelName}
+                    onChange={(e) =>
+                      updateAddress("hostelName", e.target.value)
+                    }
+                    placeholder="ssnit Hostel"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="line2">Address Line 2</Label>
+                  <Label htmlFor="roomNumber">Room Number</Label>
                   <Input
-                    id="line2"
-                    value={shippingAddress.line2 ?? ""}
-                    onChange={(e) => updateAddress("line2", e.target.value)}
-                    placeholder="Apartment, suite, landmark (optional)"
-                    autoComplete="address-line2"
+                    id="roomNumber"
+                    value={shippingAddress.roomNumber}
+                    onChange={(e) =>
+                      updateAddress("roomNumber", e.target.value)
+                    }
+                    placeholder="B12"
                   />
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="city">City</Label>
-                    <Input
-                      id="city"
-                      value={shippingAddress.city}
-                      onChange={(e) => updateAddress("city", e.target.value)}
-                      placeholder="Accra"
-                      autoComplete="address-level2"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="postcode">Postcode</Label>
-                    <Input
-                      id="postcode"
-                      value={shippingAddress.postcode}
-                      onChange={(e) =>
-                        updateAddress("postcode", e.target.value)
-                      }
-                      placeholder="GA-123-4567"
-                      autoComplete="postal-code"
-                    />
-                  </div>
-                </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="country">Country</Label>
+                  <Label htmlFor="location">Location</Label>
                   <Input
-                    id="country"
-                    value={shippingAddress.country}
-                    onChange={(e) => updateAddress("country", e.target.value)}
-                    placeholder="Ghana"
-                    autoComplete="country-name"
+                    id="location"
+                    value={shippingAddress.location}
+                    onChange={(e) => updateAddress("location", e.target.value)}
+                    placeholder="Taxy rank near SSNIT"
                   />
                 </div>
               </div>
             </div>
 
             <div className="mt-8 border-t border-zinc-200 pt-6 dark:border-zinc-800">
-            <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
-              Payment Summary
-            </h2>
+              <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
+                Payment Summary
+              </h2>
 
-            <div className="mt-6 space-y-4">
-              <div className="flex justify-between text-sm">
-                <span className="text-zinc-500 dark:text-zinc-400">
-                  Subtotal
-                </span>
-                <span className="text-zinc-900 dark:text-zinc-100">
-                  {formatPrice(totalPrice)}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-zinc-500 dark:text-zinc-400">
-                  Shipping
-                </span>
-                <span className="text-zinc-900 dark:text-zinc-100">
-                  Calculated at checkout
-                </span>
-              </div>
-              <div className="border-t border-zinc-200 pt-4 dark:border-zinc-800">
-                <div className="flex justify-between text-base font-semibold">
-                  <span className="text-zinc-900 dark:text-zinc-100">
-                    Total
+              <div className="mt-6 space-y-4">
+                <div className="flex justify-between text-sm">
+                  <span className="text-zinc-500 dark:text-zinc-400">
+                    Subtotal
                   </span>
                   <span className="text-zinc-900 dark:text-zinc-100">
                     {formatPrice(totalPrice)}
                   </span>
                 </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-zinc-500 dark:text-zinc-400">
+                    Shipping
+                  </span>
+                  <span className="text-zinc-900 dark:text-zinc-100">
+                    Calculated at checkout
+                  </span>
+                </div>
+                <div className="border-t border-zinc-200 pt-4 dark:border-zinc-800">
+                  <div className="flex justify-between text-base font-semibold">
+                    <span className="text-zinc-900 dark:text-zinc-100">
+                      Total
+                    </span>
+                    <span className="text-zinc-900 dark:text-zinc-100">
+                      {formatPrice(totalPrice)}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <div className="mt-6">
-              <CheckoutButton
-                disabled={hasStockIssues || isLoading || hasIncompleteAddress}
-                shippingAddress={shippingAddress}
-              />
-            </div>
+              <div className="mt-6">
+                <CheckoutButton
+                  disabled={hasStockIssues || isLoading || hasIncompleteAddress}
+                  shippingAddress={shippingAddress}
+                />
+              </div>
 
-            {hasIncompleteAddress ? (
-              <p className="mt-4 text-center text-xs text-amber-600 dark:text-amber-400">
-                Complete the delivery address before paying.
-              </p>
-            ) : (
-              <p className="mt-4 text-center text-xs text-zinc-500 dark:text-zinc-400">
-                You&apos;ll be redirected to Paystack&apos;s secure checkout
-              </p>
-            )}
+              {hasIncompleteAddress ? (
+                <p className="mt-4 text-center text-xs text-amber-600 dark:text-amber-400">
+                  Complete the delivery address before paying.
+                </p>
+              ) : (
+                <p className="mt-4 text-center text-xs text-zinc-500 dark:text-zinc-400">
+                  You&apos;ll be redirected to Paystack&apos;s secure checkout
+                </p>
+              )}
             </div>
           </div>
         </div>

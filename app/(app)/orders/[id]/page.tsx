@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@clerk/nextjs/server";
-import { ArrowLeft, CreditCard, MapPin } from "lucide-react"; 
+import { ArrowLeft, CreditCard, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { sanityFetch } from "@/sanity/lib/live";
 import { ORDER_BY_ID_QUERY } from "@/sanity/queries/orders";
@@ -171,14 +171,9 @@ export default async function OrderDetailPage({ params }: OrderPageProps) {
               </div>
               <div className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
                 {order.address.name && <p>{order.address.name}</p>}
-                {order.address.line1 && <p>{order.address.line1}</p>}
-                {order.address.line2 && <p>{order.address.line2}</p>}
-                <p>
-                  {[order.address.city, order.address.postcode]
-                    .filter(Boolean)
-                    .join(", ")}
-                </p>
-                {order.address.country && <p>{order.address.country}</p>}
+                {order.address.hostelName && <p>{order.address.hostelName}</p>}
+                {order.address.roomNumber && <p>{order.address.roomNumber}</p>}
+                {order.address.location && <p>{order.address.location}</p>}
               </div>
             </div>
           )}

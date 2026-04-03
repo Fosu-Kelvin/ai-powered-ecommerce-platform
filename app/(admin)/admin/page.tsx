@@ -1,13 +1,5 @@
-"use client";
-
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
-import {
-  useApplyDocumentActions,
-  createDocumentHandle,
-  createDocument,
-} from "@sanity/sdk-react";
-import { Package, ShoppingCart, TrendingUp, Plus, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { Package, ShoppingCart, TrendingUp, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   StatCard,
@@ -15,26 +7,26 @@ import {
   RecentOrders,
   AIInsightsCard,
 } from "@/components/admin";
+import { client } from "@/sanity/lib/client";
+import { ADMIN_DASHBOARD_STATS_QUERY } from "@/sanity/queries/admin";
+import { LOW_STOCK_THRESHOLD } from "@/lib/constants/stock";
 
-export default function AdminDashboard() {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const apply = useApplyDocumentActions();
+interface DashboardStats {
+  productCount: number;
+  orderCount: number;
+  lowStockCount: number;
+}
 
-  const handleCreateProduct = () => {
-    startTransition(async () => {
-      const newDocHandle = createDocumentHandle({
-        documentId: crypto.randomUUID(),
-        documentType: "product",
-      });
-      await apply(createDocument(newDocHandle));
-      router.push(`/admin/inventory/${newDocHandle.documentId}`);
-    });
-  };
+export default async function AdminDashboard() {
+  const stats = await client.fetch<DashboardStats>(
+    ADMIN_DASHBOARD_STATS_QUERY,
+    {
+      lowStockThreshold: LOW_STOCK_THRESHOLD,
+    },
+  );
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 sm:text-3xl">
@@ -44,47 +36,37 @@ export default function AdminDashboard() {
             Overview of your store
           </p>
         </div>
-        <Button
-          onClick={handleCreateProduct}
-          disabled={isPending}
-          className="w-full sm:w-auto"
-        >
-          {isPending ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Plus className="mr-2 h-4 w-4" />
-          )}
-          New Product
+        <Button asChild className="w-full sm:w-auto">
+          <Link href="/studio" target="_blank">
+            <ExternalLink className="mr-2 h-4 w-4" />
+            Open Studio
+          </Link>
         </Button>
       </div>
 
-      {/* AI Insights */}
       <AIInsightsCard />
 
-      {/* Stats Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard
           title="Total Products"
           icon={Package}
-          documentType="product"
+          value={stats.productCount}
           href="/admin/inventory"
         />
         <StatCard
           title="Total Orders"
           icon={ShoppingCart}
-          documentType="order"
+          value={stats.orderCount}
           href="/admin/orders"
         />
         <StatCard
           title="Low Stock Items"
           icon={TrendingUp}
-          documentType="product"
-          filter="stock <= 5"
-          href="/admin/inventory"
+          value={stats.lowStockCount}
+          href="/admin/inventory?filter=low-stock"
         />
       </div>
 
-      {/* Main Content Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
         <LowStockAlert />
         <RecentOrders />

@@ -50,7 +50,12 @@ export const ORDER_BY_ID_QUERY = defineQuery(`*[
   },
   total,
   status,
-  address,
+  address{
+    name,
+    hostelName,
+    roomNumber,
+    location
+  },
   paystackReference, // Changed from stripePaymentId to match your new system
   createdAt
 }`);

@@ -108,11 +108,17 @@ export const orderType = defineType({
       group: "customer",
       fields: [
         defineField({ name: "name", type: "string", title: "Full Name" }),
-        defineField({ name: "line1", type: "string", title: "Address Line 1" }),
-        defineField({ name: "line2", type: "string", title: "Address Line 2" }),
-        defineField({ name: "city", type: "string" }),
-        defineField({ name: "postcode", type: "string", title: "Postcode" }),
-        defineField({ name: "country", type: "string" }),
+        defineField({
+          name: "hostelName",
+          type: "string",
+          title: "Hostel Name",
+        }),
+        defineField({
+          name: "roomNumber",
+          type: "string",
+          title: "Room Number",
+        }),
+        defineField({ name: "location", type: "string", title: "Location" }),
       ],
     }),
     defineField({

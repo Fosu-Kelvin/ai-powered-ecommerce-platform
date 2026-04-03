@@ -1,27 +1,22 @@
 export interface ShippingAddress {
   name: string;
-  line1: string;
-  line2?: string;
-  city: string;
-  postcode: string;
-  country: string;
+  hostelName: string;
+  roomNumber: string;
+  location: string;
 }
 
 export const EMPTY_SHIPPING_ADDRESS: ShippingAddress = {
   name: "",
-  line1: "",
-  line2: "",
-  city: "",
-  postcode: "",
-  country: "",
+  hostelName: "",
+  roomNumber: "",
+  location: "",
 };
 
 export function isShippingAddressComplete(address: ShippingAddress) {
   return Boolean(
     address.name.trim() &&
-      address.line1.trim() &&
-      address.city.trim() &&
-      address.postcode.trim() &&
-      address.country.trim(),
+      address.hostelName.trim() &&
+      address.roomNumber.trim() &&
+      address.location.trim(),
   );
 }

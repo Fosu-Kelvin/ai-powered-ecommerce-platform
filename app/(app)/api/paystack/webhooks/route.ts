@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.text();
     const secret = process.env.PAYSTACK_SECRET_KEY!;
-    
+
     // 1. SECURITY: Verify the request came from Paystack
     const hash = crypto.createHmac("sha512", secret).update(body).digest("hex");
     if (hash !== req.headers.get("x-paystack-signature")) {
@@ -22,12 +22,14 @@ export async function POST(req: NextRequest) {
 
       let metadata = data.metadata;
       if (typeof metadata === "string") metadata = JSON.parse(metadata);
-      
+
       const { clerkUserId, sanityCustomerId, cartItems, shippingAddress } =
         metadata || {};
 
       if (!sanityCustomerId || !Array.isArray(cartItems)) {
-        console.error("❌ Step 3 FAILED: sanityCustomerId or cartItems missing!");
+        console.error(
+          "❌ Step 3 FAILED: sanityCustomerId or cartItems missing!",
+        );
         return new NextResponse("Missing metadata", { status: 400 });
       }
 
@@ -47,24 +49,22 @@ export async function POST(req: NextRequest) {
         address: shippingAddress
           ? {
               name: shippingAddress.name ?? "",
-              line1: shippingAddress.line1 ?? "",
-              line2: shippingAddress.line2 ?? "",
-              city: shippingAddress.city ?? "",
-              postcode: shippingAddress.postcode ?? "",
-              country: shippingAddress.country ?? "",
+              hostelName: shippingAddress.hostelName ?? "",
+              roomNumber: shippingAddress.roomNumber ?? "",
+              location: shippingAddress.location ?? "",
             }
           : undefined,
         createdAt: new Date().toISOString(),
         items: cartItems.map((item: any) => ({
           // Using product ID for the key prevents duplicate key errors on retry
-          _key: `item-${item.id}`, 
+          _key: `item-${item.id}`,
           product: {
             _type: "reference",
-            _ref: item.id 
+            _ref: item.id,
           },
           quantity: Number(item.qty),
-          priceAtPurchase: Number(item.price)
-        }))
+          priceAtPurchase: Number(item.price),
+        })),
       });
 
       // --- REDUCE THE STOCK ---
