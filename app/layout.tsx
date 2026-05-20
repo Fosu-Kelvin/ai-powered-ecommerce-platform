@@ -17,6 +17,11 @@ export const metadata: Metadata = {
     "The UDS SHOP | Online Shopping for Electronics, Furniture, Groceries, Fashion and Sports",
   description:
     "Shop electronics, furniture, groceries, fashion, sports items and more at The UDS SHOP.",
+  icons: {
+    icon: "/screen.png",
+    shortcut: "/screen.png",
+    apple: "/screen.png",
+  },
 };
 
 export default function RootLayout({
