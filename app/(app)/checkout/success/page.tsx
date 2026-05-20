@@ -3,7 +3,7 @@ import { SuccessClient } from "./SuccessClient";
 import axios from "axios";
 
 export const metadata = {
-  title: "Order Confirmed | Furniture Shop",
+  title: "Order Confirmed | The UDS SHOP",
   description: "Your order has been placed successfully",
 };
 
