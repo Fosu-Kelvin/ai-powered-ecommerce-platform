@@ -1,6 +1,10 @@
 import { Suspense } from "react";
+import { CategoryTiles } from "@/components/pageUI/CategoryTiles";
+import { FeaturedCarousel } from "@/components/pageUI/FeaturedCarousel";
+import { FeaturedCarouselSkeleton } from "@/components/pageUI/FeaturedCarouselSkeleton";
+import { ProductSection } from "@/components/pageUI/ProductSection";
 import { sanityFetch } from "@/sanity/lib/live";
-
+import { ALL_CATEGORIES_QUERY } from "@/sanity/queries/categories";
 import {
   FEATURED_PRODUCTS_QUERY,
   FILTER_PRODUCTS_BY_NAME_QUERY,
@@ -9,11 +13,7 @@ import {
   FILTER_PRODUCTS_BY_RELEVANCE_QUERY,
 } from "@/sanity/queries/products";
 
-import { ALL_CATEGORIES_QUERY } from "@/sanity/queries/categories";
-import { FeaturedCarousel } from "@/components/pageUI/FeaturedCarousel";
-import { FeaturedCarouselSkeleton } from "@/components/pageUI/FeaturedCarouselSkeleton";
-import { ProductSection } from "@/components/pageUI/ProductSection";
-import { CategoryTiles } from "@/components/pageUI/CategoryTiles";
+export const dynamic = "force-dynamic";
 
 interface PageProps {
   searchParams: Promise<{
@@ -119,7 +119,6 @@ export default async function HomePage({ searchParams }: PageProps) {
           />
         </div>
       </div>
-
 
       {/*  Products section*/}
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
