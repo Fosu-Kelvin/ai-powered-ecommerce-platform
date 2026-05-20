@@ -1,7 +1,10 @@
 import { PackageIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 // We go up two levels: schemaTypes -> sanity -> root, then into lib
-import { MATERIALS_SANITY_LIST, COLORS_SANITY_LIST } from "../../lib/constants/filters";
+import {
+  COLORS_SANITY_LIST,
+  MATERIALS_SANITY_LIST,
+} from "../../lib/constants/filters";
 
 export const productType = defineType({
   name: "product",
@@ -27,9 +30,23 @@ export const productType = defineType({
       options: {
         source: "name",
         maxLength: 96,
+        slugify: (input) =>
+          input
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "")
+            .slice(0, 96),
       },
       validation: (rule) => [
         rule.required().error("Slug is required for URL generation"),
+        rule.custom((value) => {
+          const current = value?.current;
+          if (!current) return true;
+          return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(current)
+            ? true
+            : "Slug can only contain lowercase letters, numbers, and hyphens";
+        }),
       ],
     }),
     defineField({
@@ -168,7 +185,7 @@ export const productType = defineType({
     prepare({ title, subtitle, media, price }) {
       return {
         title,
-        subtitle: `${subtitle ? subtitle + " • " : ""}GH₵${price ?? 0}`, // Updated symbol
+        subtitle: `${subtitle ? `${subtitle} • ` : ""}GH₵${price ?? 0}`, // Updated symbol
         media,
       };
     },

@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { type NextRequest, NextResponse } from "next/server";
 import { isAdminUser } from "@/lib/auth/admin";
 import { writeClient } from "@/sanity/lib/client";
 
@@ -26,6 +26,14 @@ interface ProductPayload {
   }>;
 }
 
+function slugifySegment(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export async function PATCH(req: NextRequest, context: RouteContext) {
   if (!(await isAdminUser())) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -35,7 +43,7 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
   const body = (await req.json()) as ProductPayload;
 
   const name = body.name?.trim() ?? "";
-  const slug = body.slug?.trim() ?? "";
+  const slug = slugifySegment(body.slug ?? body.name ?? "");
   const categoryId = body.categoryId?.trim() ?? "";
 
   if (!name || !slug || !categoryId) {

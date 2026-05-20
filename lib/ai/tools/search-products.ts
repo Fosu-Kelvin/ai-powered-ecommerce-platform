@@ -1,16 +1,21 @@
 import { tool } from "ai";
 import { z } from "zod";
+import type { SearchProduct } from "@/lib/ai/types";
+import { getCategoryFilterConfig } from "@/lib/constants/category-attributes";
+import { COLOR_VALUES, MATERIAL_VALUES } from "@/lib/constants/filters";
+import { getStockMessage, getStockStatus } from "@/lib/constants/stock";
+import { formatPrice } from "@/lib/utils";
 import { sanityFetch } from "@/sanity/lib/live";
 import { AI_SEARCH_PRODUCTS_QUERY } from "@/sanity/queries/products";
-import { formatPrice } from "@/lib/utils";
-import { getStockStatus, getStockMessage } from "@/lib/constants/stock";
-import { MATERIAL_VALUES, COLOR_VALUES } from "@/lib/constants/filters";
-import { getCategoryFilterConfig } from "@/lib/constants/category-attributes";
 import type { AI_SEARCH_PRODUCTS_QUERYResult } from "@/sanity.types";
-import type { SearchProduct } from "@/lib/ai/types";
 
 const MATERIAL_SET = new Set<string>(MATERIAL_VALUES);
 const COLOR_SET = new Set<string>(COLOR_VALUES);
+
+function getProductUrl(slug: string | null | undefined) {
+  if (!slug) return null;
+  return `/products/${encodeURIComponent(slug)}`;
+}
 
 const productSearchSchema = z.object({
   query: z
@@ -18,23 +23,17 @@ const productSearchSchema = z.object({
     .optional()
     .default("")
     .describe(
-      "Search term to find products by name, description, or category (e.g., 'laptop', 'backpack', 'skincare')"
+      "Search term to find products by name, description, or category (e.g., 'laptop', 'backpack', 'skincare')",
     ),
   category: z
     .string()
     .optional()
     .default("")
     .describe(
-      "Filter by category slug (e.g., 'electronics', 'fashion', 'beauty', 'home')"
+      "Filter by category slug (e.g., 'electronics', 'fashion', 'beauty', 'home')",
     ),
-  material: z
-    .string()
-    .optional()
-    .describe("Filter by material type"),
-  color: z
-    .string()
-    .optional()
-    .describe("Filter by color"),
+  material: z.string().optional().describe("Filter by material type"),
+  color: z.string().optional().describe("Filter by color"),
   minPrice: z
     .number()
     .optional()
@@ -117,11 +116,15 @@ export const searchProductsTool = tool({
         stockMessage: getStockMessage(product.stock),
         featured: product.featured ?? false,
         assemblyRequired: product.assemblyRequired ?? false,
-        customAttributes: (product as any).customAttributes?.filter(
-          (attribute: any) => attribute?.name && attribute?.value
-        ) ?? [],
+        customAttributes:
+          product.customAttributes
+            ?.filter((attribute) => attribute?.name && attribute?.value)
+            .map((attribute) => ({
+              name: attribute.name ?? "",
+              value: attribute.value ?? "",
+            })) ?? [],
         imageUrl: product.image?.asset?.url ?? null,
-        productUrl: product.slug ? `/products/${product.slug}` : null,
+        productUrl: getProductUrl(product.slug),
       }));
 
       return {
