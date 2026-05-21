@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import { Grid2x2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import type { ALL_CATEGORIES_QUERYResult } from "@/sanity.types";
 
 interface CategoryTilesProps {
@@ -14,8 +14,14 @@ export function CategoryTiles({
   categories,
   activeCategory,
 }: CategoryTilesProps) {
-  const parentCategories = categories.filter((category) => !category.parentCategory);
-  const selectedCategory = categories.find((category) => category.slug === activeCategory);
+  const getCategoryHref = (categorySlug?: string | null) =>
+    categorySlug ? `/?category=${categorySlug}#products` : "/#products";
+  const parentCategories = categories.filter(
+    (category) => !category.parentCategory,
+  );
+  const selectedCategory = categories.find(
+    (category) => category.slug === activeCategory,
+  );
   const activeParentSlug =
     selectedCategory?.parentCategory?.slug ?? selectedCategory?.slug;
   const activeParentCategory = parentCategories.find(
@@ -33,7 +39,7 @@ export function CategoryTiles({
       <div className="flex gap-4 overflow-x-auto  py-4 pl-8 pr-4 sm:pl-12 sm:pr-6 lg:pl-10 lg:pr-8 scrollbar-hide">
         {/* All Products tile */}
         <Link
-          href="/"
+          href={getCategoryHref()}
           className={`group relative flex-shrink-0 overflow-hidden rounded-xl transition-all duration-300 ${
             !activeCategory
               ? "ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-zinc-900"
@@ -63,7 +69,7 @@ export function CategoryTiles({
 
         {activeParentCategory && (
           <Link
-            href={`/?category=${activeParentCategory.slug}`}
+            href={getCategoryHref(activeParentCategory.slug)}
             className={`group relative flex-shrink-0 overflow-hidden rounded-xl transition-all duration-300 ${
               activeCategory === activeParentCategory.slug
                 ? "ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-zinc-900"
@@ -105,7 +111,7 @@ export function CategoryTiles({
           return (
             <Link
               key={category._id}
-              href={`/?category=${category.slug}`}
+              href={getCategoryHref(category.slug)}
               className={`group relative flex-shrink-0 overflow-hidden rounded-xl transition-all duration-300 ${
                 isActive
                   ? "ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-zinc-900"
